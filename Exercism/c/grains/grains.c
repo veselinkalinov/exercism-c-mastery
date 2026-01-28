@@ -3,4 +3,5 @@
 main()
 {
     unsigned int n;
+    printf("Square Num: ");
 }
