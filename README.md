@@ -1,23 +1,26 @@
-# C Mastery: Exercism Solutions
+# 🐍 Python Fundamentals & Coursework
 
-A collection of rigorous C programming challenges from [Exercism](https://exercism.org/tracks/c), focused on memory safety, pointer manipulation, and performance optimization.
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
+![Institution](https://img.shields.io/badge/TU%20Sofia-Engineering-blue?style=for-the-badge)
 
-## 🛠 Technical Focus
-This repository serves as a portfolio of my proficiency in low-level programming. Key areas demonstrated:
-* **Memory Management:** Strategic use of `malloc`, `calloc`, and `free` with zero leak tolerance.
-* **Defensive Programming:** Handling edge cases, `NULL` pointers, and buffer overflows.
-* **Data Structures:** Custom implementations of Linked Lists, Trees, and Hash Maps.
-* **Tooling:** Proficient use of `make`, `gcc` (with strict flags), and `valgrind`.
+### 📖 About
+This repository documents my journey through the **Introduction to Python** course during my first year at the **Technical University of Sofia**. 
 
-## 📂 Repository Structure
-The exercises are categorized by difficulty to show progression:
-* `/exercises/easy`: Fundamentals, syntax, and basic logic.
-* `/exercises/medium`: Complex algorithms and manual memory handling.
-* `/exercises/hard`: Advanced systems architecture and optimization.
+It contains a collection of laboratory exercises, homework assignments, and algorithmic problems aimed at mastering the core concepts of Python programming and software engineering logic.
 
-## 🚀 Getting Started
-To compile and run the tests for any exercise:
+### 🧠 Key Concepts Covered
+Through these projects, I have implemented and practiced:
+* **Core Syntax:** Variables, Data Types, and Operators.
+* **Control Flow:** Conditional logic (`if/else`) and Loops (`for/while`).
+* **Data Structures:** Lists, Tuples, Dictionaries, and Sets manipulation.
+* **Functions:** Modular programming, parameters, and return values.
+* **Algorithms:** Basic sorting and searching implementation.
+* **File Handling:** Reading from and writing to files (I/O operations).
 
-1. Clone the repo:
-   ```bash
-   git clone [https://github.com/YOUR_USERNAME/exercism-c-mastery.git](https://github.com/YOUR_USERNAME/exercism-c-mastery.git)
+### 💻 How to Run
+To run any of the scripts locally, ensure you have Python installed.
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/veselinkalinov/university-python-labs.git](https://github.com/veselinkalinov/university-python-labs.git)
