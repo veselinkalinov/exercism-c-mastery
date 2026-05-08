@@ -6,9 +6,9 @@ typedef struct
 {
     char name[31];
     char date[8];
-    unsigned long long id;
+    unsigned long long int id;
     float price;
-    int qty;
+    int quantity;
 }Medicine;
 
 Medicine *zad2(Medicine *arr, int count, char *date)
@@ -18,28 +18,29 @@ Medicine *zad2(Medicine *arr, int count, char *date)
 
     Medicine *result = NULL;
     int n = 0;
-    int curMonth,curYear;
 
     for (int i = 0; i < count; i++)
     {
-        sscanf(arr[i].date,"%d.%d",&curMonth,&curYear);
-        if (curYear < targetYear || (curYear == targetYear && curMonth < targetMonth))
+        int curMonth,curYear;
+        sscanf(arr[i].date, "%d.%d", &curMonth, &curYear);
+
+        if (targetYear > curYear || (curYear == targetYear && curMonth < targetMonth))
         {
             n++;
-            result = realloc(result, n * sizeof(Medicine));
+            result = realloc(result, n*sizeof(Medicine));
             if (result == NULL)
             {
-                return NULL;
+                exit(1);
             }
+
             result[n-1] = arr[i];
         }
-
     }
-
-    return result;
+    if (n>0){return result;}
+    else {return NULL;}
 }
 
-int zad3(Medicine *arr, int count, float minPrice, float maxPrice)
+int zad3(Medicine *arr, int count, float maxPrice, float minPrice)
 {
     FILE *ft = fopen("offer.txt", "w");
     if (ft == NULL)
@@ -47,40 +48,33 @@ int zad3(Medicine *arr, int count, float minPrice, float maxPrice)
         exit(1);
     }
 
-    int counter = 0;
+    int count_el = 0;
 
     for (int i = 0; i < count; i++)
     {
-        if(arr[i].price >= minPrice && arr[i].price <= maxPrice)
+        if (arr[i].price >= minPrice && arr[i].price <= maxPrice)
         {
-            counter++;
-            fprintf(ft, "%s\n%s\n%llu\n%.2fleva\n\n", arr[i].name, arr[i].date, arr[i].id, arr[i].price);
+            count_el++;
+            fprintf(ft, "%s\n%s\n%llu\n%.2fleva\n\n",arr[i].name, arr[i].date, arr[i].id, arr[i].price);
         }
     }
 
     fclose(ft);
-    return counter;
+    return count_el;
 }
 
-Medicine *zad4(Medicine *arr, int *count, char *name, char *date)
+void zad4(Medicine *arr, int *count, char *date, char *name)
 {
     int idx = -1;
     for (int i = 0; i < *count; i++)
     {
-        if (strcmp(arr[i].name,name)==0 && strcmp(arr[i].date,date)==0)
+        if (strcmp(arr[i].date,date)==0 && strcmp(arr[i].name,name)==1)
         {
             idx = i;
-            break;
         }
     }
 
-    if (idx == -1) {
-      printf("No such element.");
-      exit(1);
-    }
-
-    for (int i = idx; i < *count - 1; i++)
-    {
+    for (int i = idx; i < *count - 1; i++){
         arr[i] = arr[i+1];
     }
 
@@ -91,36 +85,35 @@ Medicine *zad4(Medicine *arr, int *count, char *name, char *date)
         exit(1);
     }
 
-    return arr;
-
+    if (idx == -1)
+    {
+        printf("No such medicine.");
+    }
 }
 
 int main(void)
 {
-    //zad.1:
+    Medicine *medicines = NULL;
+    int count = 0;
+
     FILE *fb = fopen("medicines.bin", "rb");
     if (fb == NULL)
     {
         exit(1);
     }
 
-    Medicine *medicines = NULL;
     Medicine temp;
-    int count = 0;
-
-    while(fread(&temp, sizeof(Medicine), 1, fb) == 1)
+    while(fread(&temp, sizeof(Medicine),1,fb)==1)
     {
         count++;
-        medicines = realloc(medicines,count * sizeof(Medicine));
+        medicines = realloc(medicines, count * sizeof(Medicine));
         if (medicines == NULL)
         {
             exit(1);
         }
 
-        medicines[count-1] = temp;
+        medicines[count - 1] = temp;
     }
-
-
 
     fclose(fb);
     free(medicines);

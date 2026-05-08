@@ -25,13 +25,17 @@ Medicine *zad2(Medicine *arr, int count, char *date) {
       n++;
       result = realloc(result, n * sizeof(Medicine));
       if (result == NULL) {
-        return NULL;
+        exit(1);
       }
       result[n - 1] = arr[i];
     }
   }
 
-  return result;
+  if (n > 0) {
+    return result;
+  } else {
+    return NULL;
+  }
 }
 
 int zad3(Medicine *arr, int count, float minPrice, float maxPrice) {
