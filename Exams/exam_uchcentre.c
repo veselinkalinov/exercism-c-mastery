@@ -11,14 +11,12 @@ typedef struct {
 
 void zad2(Course *arr, int n, int idx) {
   if (idx < 0 || idx > (n - 1)) {
-    printf("idx: %d is not in the array", idx);
     exit(1);
   }
-
   for (int i = 0; i < n; i++) {
-    if (idx == i) {
-      arr[i].price *= 0.9f;
-      printf("%.2f - %50s - %10s", arr[i].price, arr[i].name, arr[i].date);
+    if (i == idx) {
+      arr[i].price *= 0.9;
+      printf("%.2f - %s - %s\n", arr[i].price, arr[i].name, arr[i].date);
       break;
     }
   }
@@ -27,25 +25,22 @@ void zad2(Course *arr, int n, int idx) {
 int zad3(Course *arr, int n, float minPrice, float maxPrice) {
   FILE *ft = fopen("offer.txt", "w");
   if (ft == NULL) {
-    printf("File Error");
     exit(1);
   }
-
   int count = 0;
+
   for (int i = 0; i < n; i++) {
     if (arr[i].price >= minPrice && arr[i].price <= maxPrice) {
       count++;
-      fprintf(ft, "%30s\n%10s\n%d lectures\n%.2f eur.", arr[i].name,
-              arr[i].date, arr[i].lectures, arr[i].price);
+      if (fprintf(ft, "%s\n%s\n%d lectures\n%.2flv.\n\n", arr[i].name,
+                  arr[i].date, arr[i].lectures, arr[i].price) != 4) {
+        exit(1);
+      }
     }
   }
 
-  if (count == 0) {
-    return 0;
-  }
-
-  return count;
   fclose(ft);
+  return count;
 }
 
 Course *zad4(Course *arr, int *n, char *name, char *date) {
@@ -58,53 +53,48 @@ Course *zad4(Course *arr, int *n, char *name, char *date) {
   }
 
   if (idx == -1) {
-    return 0;
+    return NULL;
   }
 
-  while (idx < (*n) - 1) {
-    idx++;
-    arr[idx] = arr[idx + 1];
-    (*n)--;
-    arr = realloc(arr, (*n) * sizeof(Course));
-    if (arr == NULL) {
-      printf("Realloc Error");
-      exit(1);
-    }
+  for (int i = idx; i < (*n) - 1; i++) {
+    arr[i] = arr[i + 1];
+  }
+
+  (*n)--;
+  arr = realloc(arr, (*n) * sizeof(Course));
+  if (arr == NULL) {
+    exit(1);
   }
 
   return arr;
 }
 
 int main(void) {
-  Course *arr = NULL;
+  Course *courses = NULL;
   int n = 0;
+
   FILE *fb = fopen("courses.bin", "rb");
   if (fb == NULL) {
-    printf("File Error");
     exit(1);
   }
 
   if (fread(&n, sizeof(int), 1, fb) != 1) {
-    printf("Fread error");
     fclose(fb);
     exit(1);
   }
 
-  arr = malloc(n * sizeof(Course));
-  if (arr == NULL) {
-    printf("Malloc Error");
-    fclose(fb);
+  courses = malloc(n * sizeof(Course));
+  if (courses == NULL) {
     exit(1);
   }
 
-  if (fread(arr, sizeof(Course), n, fb) != 1) {
-    printf("Fread Error");
+  if (fread(courses, sizeof(Course), n, fb) != n) {
     fclose(fb);
-    free(arr);
+    free(courses);
     exit(1);
   }
 
   fclose(fb);
-  free(arr);
+  free(courses);
   return 0;
 }

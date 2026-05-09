@@ -4,93 +4,105 @@
 
 typedef struct {
   char name[31];
-  char expiry[8];
-  unsigned long long int code;
+  char date[8];
+  unsigned long long int id;
   float price;
   int quantity;
 } Medicine;
 
-Medicine *addMedicine(Medicine *arr, int *count) {
-  FILE *ft = fopen("medicines.txt", "r");
-  if (ft == NULL) {
-    printf("File Error");
-    exit(1);
-  }
-
-  Medicine m;
-  while (fscanf(ft, "%30[^;];%7[^;];%llu;%f;%d", m.name, m.expiry, &m.code,
-                &m.price, &m.quantity) == 5) {
-    (*count)++;
-    arr = realloc(arr, (*count) * sizeof(Medicine));
-    if (arr == NULL) {
-      printf("Alloc Error!!!");
-      exit(1);
-    }
-    arr[(*count) - 1] = m;
-  }
-
-  fclose(ft);
-  return arr;
-}
-
-void discount(Medicine *arr, int count, char date[8]) {
-  int found = 0;
-
+void zad2(Medicine *arr, int count, char *date) {
   int targetMonth, targetYear;
   sscanf(date, "%d.%d", &targetMonth, &targetYear);
 
-  for (int i = 0; i < count; i++) {
-    int medMonth, medYear;
-    sscanf(arr[i].expiry, "%d.%d", &medMonth, &medYear);
+  float oldPrice;
+  int found = 0;
 
-    if (medYear < targetYear ||
-        (medYear == targetYear && medMonth < targetMonth)) {
-      float oldPrice = arr[i].price;
-      arr[i].price *= 0.8;
-      printf("*********************************************\n");
-      printf("%30s - %7s - %.2flv %.2flv", arr[i].name, arr[i].expiry, oldPrice,
-             arr[i].price);
+  for (int i = 0; i < count; i++) {
+    int curMonth, curYear;
+    sscanf(arr[i].date, "%d.%d", &curMonth, &curYear);
+
+    if (curYear < targetYear ||
+        (curYear == targetYear && curMonth < targetMonth)) {
       found = 1;
+      oldPrice = arr[i].price;
+      arr[i].price *= 0.8;
+      printf("**************************\n");
+      printf("%s - %s - %.2fleva - %.2fleva\n", arr[i].name, arr[i].date,
+             oldPrice, arr[i].price);
     }
   }
-  if (!found)
-    printf("No such medicine\n");
+  if (!found) {
+    printf("No such medicine");
+  }
 }
 
-void overqty(Medicine *arr, int count, int qty) {
+void zad3(Medicine *arr, int count, int qty) {
   FILE *fb = fopen("offer.bin", "wb");
   if (fb == NULL) {
-    printf("File Error");
     exit(1);
   }
 
   for (int i = 0; i < count; i++) {
     if (arr[i].quantity > qty) {
-      fwrite(&arr[i], sizeof(Medicine), 1, fb);
+      int nameLen = strlen(arr[i].name);
+      fwrite(&nameLen, sizeof(int), 1, fb);
+      fwrite(arr[i].name, sizeof(char), nameLen, fb);
+      fwrite(arr[i].date, sizeof(char), 7, fb);
+      fwrite(&arr[i].id, sizeof(unsigned long long int), 1, fb);
+      fwrite(&arr[i].price, sizeof(float), 1, fb);
+      fwrite(&arr[i].quantity, sizeof(int), 1, fb);
     }
   }
 
   fclose(fb);
 }
 
-Medicine *delMed(Medicine *arr, int *count, unsigned long long int code) {
-  int found = 0;
-  int idx;
+void zad4(Medicine *arr, int *count, unsigned long long int id) {
+  int idx = -1;
   for (int i = 0; i < *count; i++) {
-    if (arr[i].code == code) {
+    if (arr[i].id == id) {
       idx = i;
-      found = 1;
-      break;
     }
   }
-  if (!found) {
-    printf("No such code found");
-    return 0;
+
+  if (idx == -1) {
+    printf("No such medicine id");
+    return;
   }
+
   for (int i = idx; i < *count - 1; i++) {
     arr[i] = arr[i + 1];
   }
+
   (*count)--;
   arr = realloc(arr, (*count) * sizeof(Medicine));
-  return arr;
+  if (arr == NULL) {
+    exit(1);
+  }
+}
+
+int main(void) {
+  FILE *ft = fopen("medicines.txt", "r");
+  if (ft == NULL) {
+    exit(1);
+  };
+
+  Medicine *medicines = NULL;
+  Medicine temp;
+  int count = 0;
+
+  while (fscanf(ft, "%30s;%7s;%llu;%f;%d", temp.name, temp.date, &temp.id,
+                &temp.price, &temp.quantity) == 5) {
+    count++;
+    medicines = realloc(medicines, count * sizeof(Medicine));
+    if (medicines == NULL) {
+      exit(1);
+    }
+
+    medicines[count - 1] = temp;
+  }
+
+  free(medicines);
+  fclose(ft);
+  return 0;
 }

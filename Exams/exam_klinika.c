@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct {
   char name[31];
@@ -7,79 +8,75 @@ typedef struct {
   float price;
 } Patient;
 
-Patient *zad1(Patient *arr, int *n) {
-  (*n)++;
-  FILE *ft = fopen("animalsText.txt", "a");
-  if (ft == NULL) {
-    printf("ft error");
-    exit(1);
-  }
-
-  arr = realloc(arr, (*n) * sizeof(Patient));
+Patient *zad1() {
+  Patient *arr = NULL;
+  int count = 0;
+  int *pcount = &count;
+  (*pcount)++;
+  arr = realloc(arr, (*pcount) * sizeof(Patient));
   if (arr == NULL) {
-    printf("arr realloc error");
     exit(1);
   }
 
-  Patient *p = &arr[(*n) - 1];
+  Patient *p = &arr[(*pcount) - 1];
   printf("Name: ");
-  scanf("%30[^\n]", p->name);
-  printf("Chip ID: ");
+  scanf("%30s", p->name);
+  printf("ID: ");
   scanf("%7s", p->id);
   printf("Price: ");
   scanf("%f", &p->price);
 
-  fprintf(ft, "%30s,%.2f", p->name, p->price);
+  FILE *ft = fopen("animalsText.txt", "a");
+  if (ft == NULL) {
+    exit(1);
+  }
+
+  if (fprintf(ft, "%s,%.2f", p->name, p->price) < 0) {
+    exit(1);
+  }
 
   fclose(ft);
   return arr;
 }
 
-void zad2(Patient *arr, int n, float price) {
+void zad2(Patient *arr, int count, float price) {
   int found = 0;
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < count; i++) {
     if (arr[i].price == price) {
-      printf("%30s - %7s\n", arr[i].name, arr[i].id);
       found = 1;
+      printf("%s - %s", arr[i].name, arr[i].id);
       break;
     }
   }
   if (!found) {
-    printf("price not found\n");
-    exit(1);
+    printf("No such patient");
   }
 }
 
 void zad3(float price) {
   FILE *fb = fopen("animalsBin.bin", "rb");
   if (fb == NULL) {
-    printf("fb error\n");
     exit(1);
   }
 
   Patient p;
   while (fread(&p, sizeof(Patient), 1, fb) == 1) {
     if (p.price >= price) {
-      printf("Bin OwnerName: %30s\n", p.name);
-      printf("Bin Chip: %7s\n", p.id);
+      printf("Bin OwnerName: %s\n", p.name);
+      printf("Bin Chip: %s\n", p.id);
       printf("Bin Price: %.2f\n", p.price);
-      printf("--------------------------------\n");
+      printf("-------------------------\n");
     }
   }
+
   fclose(fb);
 }
 
 int main(void) {
-  Patient *arr = NULL;
-  int n = 0;
+  Patient *patients = NULL;
 
-  arr = zad1(arr, &n);
+  patients = zad1();
 
-  float p = 17.25;
-  zad2(arr, n, p);
-
-  zad3(p);
-
-  free(arr);
+  free(patients);
   return 0;
 }

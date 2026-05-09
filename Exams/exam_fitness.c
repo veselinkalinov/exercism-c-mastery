@@ -6,7 +6,7 @@ typedef struct {
   char name[56];
   char id[7];
   float price;
-  int locker;
+  unsigned long long int locker;
 } Fitness;
 
 Fitness *zad1(Fitness *arr, int *count) {
@@ -31,9 +31,9 @@ Fitness *zad1(Fitness *arr, int *count) {
   printf("Price: ");
   scanf("%f", &f->price);
   printf("Locker Code (example: 123): ");
-  scanf("%d", &f->locker);
+  scanf("%llu", &f->locker);
 
-  fprintf(ft, "%d;%55s;%6s;%.2f;%d\n", (int)strlen(f->name), f->name, f->id,
+  fprintf(ft, "%d;%55s;%6s;%.2f;%llu\n", (int)strlen(f->name), f->name, f->id,
           f->price, f->locker);
 
   fclose(ft);
@@ -62,13 +62,13 @@ void zad3(char *id) {
     exit(1);
   }
 
-  Fitness *f;
-  while (fread(f, sizeof(Fitness), 1, fb) == 1) {
-    if (strcmp(f->id, id) == 0) {
-      printf("Bin Names: %55s\n", f->name);
-      printf("Bin ID: %6s\n", f->id);
-      printf("Bin M_Price: %.2f\n", f->price);
-      printf("Bin Locker: %d\n", f->locker);
+  Fitness f;
+  while (fread(&f, sizeof(Fitness), 1, fb) == 1) {
+    if (strcmp(f.id, id) == 0) {
+      printf("Bin Names: %55s\n", f.name);
+      printf("Bin ID: %6s\n", f.id);
+      printf("Bin M_Price: %.2f\n", f.price);
+      printf("Bin Locker: %llu\n", f.locker);
       break;
     }
   }
